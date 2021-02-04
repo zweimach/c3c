@@ -971,9 +971,13 @@ Ast *parse_stmt(Context *context)
 		case TOKEN_INT:
 		case TOKEN_ISIZE:
 		case TOKEN_LONG:
+		case TOKEN_IPTR:
+		case TOKEN_IREG:
 		case TOKEN_SHORT:
 		case TOKEN_UINT:
 		case TOKEN_ULONG:
+		case TOKEN_UPTR:
+		case TOKEN_UREG:
 		case TOKEN_USHORT:
 		case TOKEN_USIZE:
 		case TOKEN_C_SHORT:

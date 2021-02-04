@@ -506,6 +506,12 @@ static inline TypeInfo *parse_base_type(Context *context)
 		case TOKEN_INT:
 			type_found = type_int;
 			break;
+		case TOKEN_IPTR:
+			type_found = type_uptr;
+			break;
+		case TOKEN_IREG:
+			type_found = type_ureg;
+			break;
 		case TOKEN_ISIZE:
 			type_found = type_isize;
 			break;
@@ -520,6 +526,12 @@ static inline TypeInfo *parse_base_type(Context *context)
 			break;
 		case TOKEN_ULONG:
 			type_found = type_ulong;
+			break;
+		case TOKEN_UPTR:
+			type_found = type_uptr;
+			break;
+		case TOKEN_UREG:
+			type_found = type_ureg;
 			break;
 		case TOKEN_USHORT:
 			type_found = type_ushort;

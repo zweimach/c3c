@@ -7,7 +7,7 @@
 static Type t_u0, t_str, t_u1, t_i8, t_i16, t_i32, t_i64, t_i128, t_ixx;
 static Type t_u8, t_u16, t_u32, t_u64, t_u128;
 static Type t_f16, t_f32, t_f64, t_f128, t_fxx;
-static Type t_usz, t_isz;
+static Type t_usz, t_isz, t_uptr, t_iptr, t_ureg, t_ireg;
 static Type t_cus, t_cui, t_cul, t_cull;
 static Type t_cs, t_ci, t_cl, t_cll;
 static Type t_voidstar, t_typeid, t_error, t_typeinfo;
@@ -28,12 +28,16 @@ Type *type_int = &t_i32;
 Type *type_long = &t_i64;
 Type *type_i128 = &t_i128;
 Type *type_isize = &t_isz;
+Type *type_ireg = &t_ireg;
+Type *type_iptr = &t_iptr;
 Type *type_char = &t_u8;
 Type *type_ushort = &t_u16;
 Type *type_uint = &t_u32;
 Type *type_ulong = &t_u64;
 Type *type_u128 = &t_u128;
 Type *type_usize = &t_usz;
+Type *type_ureg = &t_ureg;
+Type *type_uptr = &t_uptr;
 Type *type_compint = &t_ixx;
 Type *type_compfloat = &t_fxx;
 Type *type_compstr = &t_str;
@@ -954,8 +958,12 @@ type_create(#_name, &_shortname, _type, _bits, target->align_ ## _align, target-
 	type_create("compint", &t_ixx, TYPE_IXX, 32, 0, 0);
 	type_create("compfloat", &t_fxx, TYPE_FXX, 64, 0, 0);
 
-	type_create_alias("usize", &t_usz, type_int_unsigned_by_bitsize(target->width_pointer));
-	type_create_alias("isize", &t_isz, type_int_signed_by_bitsize(target->width_pointer));
+	type_create_alias("usize", &t_usz, type_int_unsigned_by_bitsize(target->width_size));
+	type_create_alias("isize", &t_isz, type_int_signed_by_bitsize(target->width_size));
+	type_create_alias("uptr", &t_uptr, type_int_unsigned_by_bitsize(target->width_pointer));
+	type_create_alias("iptr", &t_iptr, type_int_signed_by_bitsize(target->width_pointer));
+	type_create_alias("ureg", &t_uptr, type_int_unsigned_by_bitsize(target->width_ireg));
+	type_create_alias("ireg", &t_iptr, type_int_signed_by_bitsize(target->width_ireg));
 
 	type_create_alias("c_ushort", &t_cus, type_int_unsigned_by_bitsize(target->width_c_short));
 	type_create_alias("c_uint", &t_cui, type_int_unsigned_by_bitsize(target->width_c_int));

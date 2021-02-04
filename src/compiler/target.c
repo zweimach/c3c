@@ -4,7 +4,9 @@
 #include <target_info/target_info.h>
 #include "compiler_internal.h"
 
+static unsigned arch_register_bit_width(ArchType arch);
 static unsigned arch_pointer_bit_width(OsType os, ArchType arch);
+static unsigned arch_size_bit_width(OsType os, ArchType arch);
 static ArchType arch_from_llvm_string(const char *string);
 static EnvironmentType environment_type_from_llvm_string(const char *string);
 static bool arch_is_supported(ArchType arch);
@@ -461,6 +463,8 @@ void target_setup(void)
 
 	build_target.float_abi = false;
 	build_target.width_pointer = arch_pointer_bit_width(build_target.os, build_target.arch);
+	build_target.width_size = arch_size_bit_width(build_target.os, build_target.arch);
+	build_target.width_ireg = arch_register_bit_width(build_target.arch);
 	assert(build_target.width_pointer == LLVMPointerSize(build_target.llvm_data_layout) * 8);
 	build_target.alloca_address_space = 0;
 
@@ -899,6 +903,11 @@ static unsigned arch_pointer_bit_width(OsType os, ArchType arch)
 	}
 }
 
+static unsigned arch_size_bit_width(OsType os, ArchType arch)
+{
+	return arch_pointer_bit_width(os, arch);
+}
+
 unsigned arch_is_big_endian(ArchType arch)
 {
 	switch (arch)
@@ -1120,6 +1129,69 @@ unsigned os_target_c_type_bits(OsType os, ArchType arch, CType type)
 		case CTYPE_LONG_LONG:
 			return 64;
 		default:
+			UNREACHABLE
+	}
+
+}
+
+
+static unsigned arch_register_bit_width(ArchType arch)
+{
+	switch (arch)
+	{
+		case ARCH_TYPE_UNKNOWN:
+		case ARCH_TYPE_ARM:
+		case ARCH_TYPE_ARMB:
+		case ARCH_TYPE_AARCH64_32:
+		case ARCH_TYPE_MIPS:
+		case ARCH_TYPE_MIPSEL:
+		case ARCH_TYPE_PPC:
+		case ARCH_TYPE_RISCV32:
+		case ARCH_TYPE_X86:
+		case ARCH_TYPE_NVPTX:
+		case ARCH_TYPE_LE32:
+		case ARCH_TYPE_SPIR:
+		case ARCH_TYPE_HSAIL:
+		case ARCH_TYPE_WASM32:
+		case ARCH_TYPE_RSCRIPT32:
+			return 32;
+		case ARCH_TYPE_AARCH64:
+		case ARCH_TYPE_AARCH64_BE:
+		case ARCH_TYPE_MIPS64:
+		case ARCH_TYPE_MIPS64EL:
+		case ARCH_TYPE_PPC64:
+		case ARCH_TYPE_PPC64LE:
+		case ARCH_TYPE_RISCV64:
+		case ARCH_TYPE_X86_64:
+		case ARCH_TYPE_AMDIL64:
+		case ARCH_TYPE_LE64:
+		case ARCH_TYPE_NVPTX64:
+		case ARCH_TYPE_SPIR64:
+		case ARCH_TYPE_HSAIL64:
+		case ARCH_TYPE_WASM64:
+		case ARCH_TYPE_RSCRIPT64:
+			return 64;
+		case ARCH_TYPE_XCORE:
+		case ARCH_TYPE_ARC:
+		case ARCH_TYPE_AVR:
+		case ARCH_TYPE_BPFEL:
+		case ARCH_TYPE_BPFEB:
+		case ARCH_TYPE_HEXAGON:
+		case ARCH_TYPE_MSP430:
+		case ARCH_TYPE_R600:
+		case ARCH_TYPE_AMDGCN:
+		case ARCH_TYPE_SPARC:
+		case ARCH_TYPE_SPARCV9:
+		case ARCH_TYPE_SPARCEL:
+		case ARCH_TYPE_SYSTEMZ:
+		case ARCH_TYPE_TCE:
+		case ARCH_TYPE_TCELE:
+		case ARCH_TYPE_THUMB:
+		case ARCH_TYPE_THUMBEB:
+		case ARCH_TYPE_AMDIL:
+		case ARCH_TYPE_KALIMBA:
+		case ARCH_TYPE_SHAVE:
+		case ARCH_TYPE_LANAI:
 			UNREACHABLE
 	}
 
